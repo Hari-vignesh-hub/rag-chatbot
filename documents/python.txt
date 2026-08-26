@@ -1,0 +1,14 @@
+Python is a high-level programming language.
+
+Python was created by Guido van Rossum.
+
+Python is widely used for artificial intelligence,
+machine learning, data science, web development,
+automation, and scripting.
+
+Python uses indentation to define blocks of code.
+
+Python supports object-oriented programming,
+functional programming, and procedural programming.
+
+Python files normally use the .py extension.
