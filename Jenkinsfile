@@ -2,25 +2,40 @@
 pipeline {
     agent any
 
+    options {
+        skipDefaultCheckout(true)
+    }
+
     stages {
-
-        stage('Welcome') {
-            steps {
-                echo 'Welcome to AI RAG Chatbot CI/CD!'
-            }
-        }
-
         stage('Checkout') {
             steps {
-                echo 'Jenkins has successfully accessed the GitHub repository.'
+                echo 'Downloading source code from GitHub...'
+                checkout scm
             }
         }
 
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
-                echo 'Ready to build the chatbot Docker image.'
+                echo 'Building AI RAG Chatbot Docker image...'
+                sh 'docker build -t ai-rag-chatbot:${BUILD_NUMBER} -t ai-rag-chatbot:latest .'
             }
         }
 
+        stage('Verify Docker Image') {
+            steps {
+                echo 'Verifying the Docker image...'
+                sh 'docker image inspect ai-rag-chatbot:${BUILD_NUMBER}'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'SUCCESS: AI RAG Chatbot Docker image built successfully!'
+        }
+
+        failure {
+            echo 'FAILED: Please check the Jenkins console output.'
+        }
     }
 }
