@@ -14,6 +14,24 @@ pipeline {
             }
         }
 
+        stage('Install Test Dependencies') {
+            steps {
+                echo 'Creating Python virtual environment...'
+                sh 'python3 -m venv .venv-test'
+
+                echo 'Installing testing dependencies...'
+                sh '.venv-test/bin/pip install --upgrade pip'
+                sh '.venv-test/bin/pip install -r requirements-dev.txt'
+            }
+        }
+
+        stage('Run Automated Tests') {
+            steps {
+                echo 'Running AI RAG Chatbot tests...'
+                sh '.venv-test/bin/python -m pytest tests -v'
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 echo 'Building AI RAG Chatbot Docker image...'
@@ -23,7 +41,7 @@ pipeline {
 
         stage('Verify Docker Image') {
             steps {
-                echo 'Verifying the Docker image...'
+                echo 'Verifying Docker image...'
                 sh 'docker image inspect ai-rag-chatbot:${BUILD_NUMBER}'
             }
         }
@@ -31,11 +49,11 @@ pipeline {
 
     post {
         success {
-            echo 'SUCCESS: AI RAG Chatbot Docker image built successfully!'
+            echo 'SUCCESS: Tests passed and Docker image built successfully!'
         }
 
         failure {
-            echo 'FAILED: Please check the Jenkins console output.'
+            echo 'FAILED: Check the Jenkins console output.'
         }
     }
 }
